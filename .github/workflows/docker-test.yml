@@ -1,0 +1,32 @@
+name: Build and Test Docker Container
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t my-portal-image .
+
+      - name: Run Docker container
+        run: |
+          docker run -d -p 8080:80 --name my-portal-container my-portal-image
+          sleep 5  # Wait for the server to start
+
+      - name: Test container is serving content
+        run: |
+          curl --fail http://localhost:8080 | grep "Welcome"
+
+      - name: Stop and remove container
+        if: always()
+        run: docker rm -f my-portal-container || true
+
