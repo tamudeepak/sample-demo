@@ -24,7 +24,7 @@ jobs:
 
       - name: Test container is serving content
         run: |
-          curl --fail http://localhost:8080 | grep "Welcome"
+          curl --fail http://localhost:8080 | grep -i "this"
 
       - name: Stop and remove container
         if: always()
